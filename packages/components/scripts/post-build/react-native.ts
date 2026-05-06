@@ -831,13 +831,13 @@ export const DBColors = {
 
 /**
  * Font family names loaded by DBFontProvider.
- * Use these in StyleSheet to apply the DB typeface (Open Sans).
+ * Use these in StyleSheet to apply the DB typeface (DBNeoScreenSans).
  */
 export const DBFontFamily = {
-  regular:  'OpenSans-Regular',
-  medium:   'OpenSans-Medium',
-  semibold: 'OpenSans-SemiBold',
-  bold:     'OpenSans-Bold',
+  regular:  'DBNeoScreenSans-Regular',
+  medium:   'DBNeoScreenSans-Medium',
+  semibold: 'DBNeoScreenSans-SemiBold',
+  bold:     'DBNeoScreenSans-Bold',
 } as const;
 
 export const DBTypography = {
@@ -939,7 +939,7 @@ export type DBSectionState = DBSectionDefaultState;
 `,
 
 	'text/text.tsx': `import React from "react";
-import { Text } from "react-native";
+import { Platform, Text } from "react-native";
 import { useDBFont } from "../../providers/font-provider";
 import { DBTheme, DBTypography } from "../../shared/tokens";
 import type { DBTextProps } from "./model";
@@ -1012,7 +1012,7 @@ function DBText(props: DBTextProps) {
         {
           color: c[colorKey],
           fontSize,
-          fontWeight: fontWeightStr as any,
+          ...(Platform.OS === 'android' && f[weightKey] ? {} : { fontWeight: fontWeightStr as any }),
           fontFamily: f[weightKey],
           ...(letterSpacing !== undefined ? { letterSpacing } : {}),
           ...(textTransform !== undefined ? { textTransform } : {}),
@@ -3984,7 +3984,7 @@ export function useDBFont(): DBFontContextValue {
 		const fontSrcDir = join(REPO_ROOT, 'packages/foundations/assets/fonts');
 		const fontDestDir = join(REPO_ROOT, 'output/react-native/assets/fonts');
 		ensureDir(fontDestDir);
-		for (const name of ['OpenSans-Regular', 'OpenSans-Medium', 'OpenSans-SemiBold', 'OpenSans-Bold']) {
+		for (const name of ['DBNeoScreenSans-Regular', 'DBNeoScreenSans-Medium', 'DBNeoScreenSans-SemiBold', 'DBNeoScreenSans-Bold']) {
 			const src  = join(fontSrcDir, `${name}.ttf`);
 			const dest = join(fontDestDir, `${name}.ttf`);
 			if (existsSync(src)) {
