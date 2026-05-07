@@ -1226,7 +1226,7 @@ function DBNavigationItem(props: DBNavigationItemProps) {
       >
         <View style={styles.labelRow}>
           {props.label ? (
-            <DBText weight={props.active ? "bold" : "regular"} style={{ color: props.active ? c.brandText : c.textMuted }}>
+            <DBText weight={props.active ? "bold" : "regular"} style={{ color: props.active ? c.text : c.textMuted }}>
               {props.label}
             </DBText>
           ) : props.children}
@@ -1268,7 +1268,7 @@ function DBNavigationItem(props: DBNavigationItemProps) {
                   >
                     <DBText
                       weight={p.active || isActive ? "bold" : "regular"}
-                      style={{ color: p.active ? c.brandText : c.text, flex: 1 }}
+                      style={{ color: c.text, flex: 1 }}
                     >
                       {label}
                     </DBText>
