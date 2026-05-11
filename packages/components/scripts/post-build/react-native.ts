@@ -831,13 +831,13 @@ export const DBColors = {
 
 /**
  * Font family names loaded by DBFontProvider.
- * Use these in StyleSheet to apply the DB typeface (Open Sans).
+ * Use these in StyleSheet to apply the DB typeface (DBNeoScreenSans).
  */
 export const DBFontFamily = {
-  regular:  'OpenSans-Regular',
-  medium:   'OpenSans-Medium',
-  semibold: 'OpenSans-SemiBold',
-  bold:     'OpenSans-Bold',
+  regular:  'DBNeoScreenSans-Regular',
+  medium:   'DBNeoScreenSans-Medium',
+  semibold: 'DBNeoScreenSans-SemiBold',
+  bold:     'DBNeoScreenSans-Bold',
 } as const;
 
 export const DBTypography = {
@@ -939,7 +939,7 @@ export type DBSectionState = DBSectionDefaultState;
 `,
 
 	'text/text.tsx': `import React from "react";
-import { Text } from "react-native";
+import { Platform, Text } from "react-native";
 import { useDBFont } from "../../providers/font-provider";
 import { DBTheme, DBTypography } from "../../shared/tokens";
 import type { DBTextProps } from "./model";
@@ -973,7 +973,7 @@ const VARIANT_WEIGHT: Record<NonNullable<DBTextProps["variant"]>, string> = {
   subtle:   DBTypography.weightRegular,
   caption:  DBTypography.weightRegular,
   overline: DBTypography.weightMedium,
-  brand:    DBTypography.weightMedium,
+  brand:    DBTypography.weightBold,
   disabled: DBTypography.weightRegular,
 };
 
@@ -1012,7 +1012,7 @@ function DBText(props: DBTextProps) {
         {
           color: c[colorKey],
           fontSize,
-          fontWeight: fontWeightStr as any,
+          ...(Platform.OS === 'android' && f[weightKey] ? {} : { fontWeight: fontWeightStr as any }),
           fontFamily: f[weightKey],
           ...(letterSpacing !== undefined ? { letterSpacing } : {}),
           ...(textTransform !== undefined ? { textTransform } : {}),
@@ -1226,7 +1226,7 @@ function DBNavigationItem(props: DBNavigationItemProps) {
       >
         <View style={styles.labelRow}>
           {props.label ? (
-            <DBText weight={props.active ? "bold" : "regular"} style={{ color: props.active ? c.brandText : c.textMuted }}>
+            <DBText weight={props.active ? "bold" : "regular"} style={{ color: props.active ? c.text : c.textMuted }}>
               {props.label}
             </DBText>
           ) : props.children}
@@ -1268,7 +1268,7 @@ function DBNavigationItem(props: DBNavigationItemProps) {
                   >
                     <DBText
                       weight={p.active || isActive ? "bold" : "regular"}
-                      style={{ color: p.active ? c.brandText : c.text, flex: 1 }}
+                      style={{ color: c.text, flex: 1 }}
                     >
                       {label}
                     </DBText>
@@ -3086,8 +3086,9 @@ export default DBBadge;
 `,
 
   'brand/brand.tsx': `import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { SvgXml } from "react-native-svg";
+import DBText from "../text/text";
 import { useDBFont } from "../../providers/font-provider";
 import { DBTheme } from "../../shared/tokens";
 import type { DBBrandProps } from "./model";
@@ -3113,9 +3114,9 @@ function DBBrand(props: DBBrandProps) {
             <View style={[styles.separator, { backgroundColor: c.border }]} />
           )}
           {props.text ? (
-            <Text style={[styles.productName, { color: c.text }]} allowFontScaling={false}>
+            <DBText weight="bold" style={[styles.productName, { color: c.text }]}>
               {props.text}
-            </Text>
+            </DBText>
           ) : props.children}
         </>
       )}
@@ -3984,7 +3985,7 @@ export function useDBFont(): DBFontContextValue {
 		const fontSrcDir = join(REPO_ROOT, 'packages/foundations/assets/fonts');
 		const fontDestDir = join(REPO_ROOT, 'output/react-native/assets/fonts');
 		ensureDir(fontDestDir);
-		for (const name of ['OpenSans-Regular', 'OpenSans-Medium', 'OpenSans-SemiBold', 'OpenSans-Bold']) {
+		for (const name of ['DBNeoScreenSans-Regular', 'DBNeoScreenSans-Medium', 'DBNeoScreenSans-SemiBold', 'DBNeoScreenSans-Bold']) {
 			const src  = join(fontSrcDir, `${name}.ttf`);
 			const dest = join(fontDestDir, `${name}.ttf`);
 			if (existsSync(src)) {
